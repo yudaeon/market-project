@@ -13,10 +13,10 @@ public class ItemEntity {
     private Long id;
 
     //null 허용 x
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     private String title;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 500)
     private String description;
 
     private String imageUrl;

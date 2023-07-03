@@ -7,6 +7,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -46,12 +49,13 @@ public class ItemController {
         return response;
     }
 
-    // PUT /items/{itemId}/image
-    @PutMapping( "/{itemId}/image")
-    public ResponseDto updateImage(@PathVariable("itemId") Long id, @RequestBody ItemDto dto) {
-        service.updateUserImage(id, dto);
+    @PutMapping("/{itemId}/image")
+    public ResponseDto updateImage(@PathVariable("itemId") Long id,
+                                   @ModelAttribute ItemDto dto,
+                                   @RequestParam("image") MultipartFile multipartFile) throws IOException {
+        service.updateUserImage(id, dto, multipartFile);
         ResponseDto response = new ResponseDto();
-        response.setMessage("이미지 등록이 완료되었습니다.");
+        response.setMessage("이미지가 등록되었습니다.");
         return response;
     }
 
@@ -61,5 +65,6 @@ public class ItemController {
         service.deleteItem(id, dto);
         ResponseDto response = new ResponseDto();
         response.setMessage("물품을 삭제했습니다.");
-        return response;    }
+        return response;
+    }
 }

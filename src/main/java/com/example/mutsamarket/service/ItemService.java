@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
@@ -51,9 +52,12 @@ public class ItemService {
     //READ : 물품 조회 기능 (단일 품목 아이디로)
     public ItemDto readItem(Long id) {
         Optional<ItemEntity> optionalItem = repository.findById(id);
-        return ItemDto.fromEntity(optionalItem.get());
+        if (optionalItem.isPresent()) {
+            return ItemDto.fromEntity(optionalItem.get());
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "일치하는 상품이 없습니다.");
+        }
     }
-
 
     //UPDATE 물품 정보 수정
     public ItemDto updateItem(Long id, ItemDto dto) {
@@ -71,26 +75,28 @@ public class ItemService {
                 target.setPassword(dto.getPassword());
 
                 return ItemDto.fromEntity(repository.save(target));
+            } else {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "비밀번호를 틀렸습니다.");
             }
-            else throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "일치하는 상품이 없습니다.");
     }
 
-    //상품 이미지 등록 구현
-    public ItemDto updateUserImage(Long id, ItemDto dto) {
+
+    public ItemDto updateUserImage(Long id, ItemDto dto, MultipartFile multipartFile) {
         Optional<ItemEntity> imageItem = repository.findById(id);
         if (imageItem.isPresent()) {
             ItemEntity target = imageItem.get();
 
-            // 비밀번호가 일치하면 수정하기
             if (target.getPassword().equals(dto.getPassword())) {
                 target.setImageUrl(dto.getImageUrl());
                 return ItemDto.fromEntity(repository.save(target));
+            } else {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "비밀번호를 틀렸습니다.");
             }
-            else throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "일치하는 상품이 없습니다.");
         }
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
     //DELETE 물품 정보 삭제
@@ -101,8 +107,8 @@ public class ItemService {
             ItemEntity target = optionalItemEntity.get();
             // 비밀번호가 일치하면 삭제하기
             if (target.getPassword().equals(dto.getPassword())) repository.deleteById(id);
-            else throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            else throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "비밀번호를 틀렸습니다.");
         }
-        else throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "일치하는 상품이 없습니다.");
     }
 }
