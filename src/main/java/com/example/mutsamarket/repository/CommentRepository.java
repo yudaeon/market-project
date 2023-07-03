@@ -9,4 +9,5 @@ import java.util.Optional;
 
 public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
     Page<CommentEntity> findByItemId(Long itemId, Pageable pageable);
+    Optional<CommentEntity> findByIdAndItemId(Long id, Long itemId);
 }
