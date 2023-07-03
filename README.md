@@ -18,7 +18,7 @@
 - **Project** : Gradle - Groovy
 - **Language** : Java 17
 - **Spring Boot** : 3.1.1
-- **Dependency  :** Spring Web, Spring Boot DevTools, Lombok, Thymeleaf, ****Validation, Spring Data JPA.
+- **Dependency  :** Spring Web, Spring Boot DevTools, Lombok, Thymeleaf, Validation, Spring Data JPA.
 - **Database :** SQLite
 
 ## 📌 멋사마켓 ERD
@@ -86,5 +86,3 @@
     2. 이때 구매 제안의 상태는 **확정** 상태가 된다.
     3. 구매 제안이 확정될 경우, 대상 물품의 상태는 **판매 완료**가 된다.
     4. 구매 제안이 확정될 경우, 확정되지 않은 다른 구매 제안의 상태는 모두 **거절**이 된다.
-
---
