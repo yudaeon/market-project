@@ -2,7 +2,6 @@ package com.example.mutsamarket.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
 @Data
 @Entity
 @Table(name = "comment")
@@ -11,18 +10,15 @@ public class CommentEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "item_id")
     private Long itemId;
 
     @Column(nullable = false)
     private String writer;
 
-    @Column
     private String password;
 
-    @Column(nullable = false)
     private String content;
 
-    @Column
     private String reply;
 }
