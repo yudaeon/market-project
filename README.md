@@ -22,9 +22,7 @@
 - **Database :** SQLite
 
 ## 📌 멋사마켓 ERD
-
----
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/f06f320b-5e79-4563-9f1b-c6feeaa7591a/Untitled.png)
+<img width="80%" src="https://github.com/likelion-backend-5th/MiniProject_Basic_YuDaeon/assets/124870889/2e17c9bd-49e3-4201-a5ff-64ae4e2f3596"/>
 
 ## 🚧 주요 기능
 ---
