@@ -82,7 +82,7 @@ public class CommentService {
         commentRepository.deleteById(commentId);
     }
 
-    // PUT: 답글 등록 -> 코드 수정 필요
+    // PUT: 답글 등록 기능 구현
     public CommentDto updateCommentReply(Long itemId, Long commentId, CommentDto dto) {
         Optional<CommentEntity> optionalComment = commentRepository.findById(commentId);
         if (optionalComment.isEmpty())

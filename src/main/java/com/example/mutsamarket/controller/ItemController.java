@@ -6,12 +6,10 @@ import com.example.mutsamarket.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -64,17 +62,6 @@ public class ItemController {
         response.setMessage("이미지가 등록되었습니다.");
         return ResponseEntity.ok(response);
     }
-//    public ResponseEntity<ResponseDto> updateImage(
-//            @PathVariable("itemId") Long itemId,
-//            @RequestParam("image") MultipartFile image,
-//            @RequestParam("writer") String writer,
-//            @RequestParam("password") String password
-//    ){
-//        this.service.updateItem(itemId, image, writer, password);
-//        ResponseDto response = new ResponseDto();
-//        response.setMessage("이미지가 등록되었습니다.");
-//        return ResponseEntity.ok(response);
-//    }
 
     // DELETE /items/{itemId}
     @DeleteMapping("/{itemId}")

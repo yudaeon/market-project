@@ -6,17 +6,20 @@ import com.example.mutsamarket.dto.item.ResponseDto;
 import com.example.mutsamarket.service.NegotiationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping("/items/{itemId}/proposals")
+@RequestMapping("/items")
 @RequiredArgsConstructor
 public class NegotiationController {
     private final NegotiationService service;
 
     //구매 제안 등록
     //POST /items/{itemId}/proposals
-    @PostMapping
+    @PostMapping("/{itemId}/proposals")
     public ResponseDto createNegotiation(
             @PathVariable("itemId") Long itemId,
             @RequestBody NegotiationDto dto) {
@@ -28,7 +31,7 @@ public class NegotiationController {
 
     // 구매제안 조회 (작성자, 비밀번호 일치시)
     //GET /items/{itemId}/proposals?writer=jeeho.edu&password=qwerty1234&page=1
-    @GetMapping
+    @GetMapping("/{itemId}/proposals")
     public Page<NegotiationListDto> readNegotiation(
             @PathVariable("itemId") Long itemId,
             @RequestParam(value = "writer") String writer,
@@ -39,35 +42,38 @@ public class NegotiationController {
 
     // PUT /items/{itemId}/proposals/{proposalId} 제안 수정
     // 제안 수정, 상태 변경, 구매 확정 기능 추가
-    @PutMapping("/{proposalId}")
-    public ResponseDto updateNegotiation(
+    @PutMapping("/{itemId}/proposals/{proposalId}")
+    public ResponseEntity<ResponseDto> updateNegotiation(
             @PathVariable("itemId") Long itemId,
             @PathVariable("proposalId") Long proposalId,
-            @RequestBody NegotiationDto dto) {
-            //제안수정 기능 추가
-        if (dto.getStatus() == null) {
-            service.updateNegotiation(itemId, proposalId, dto);
-            ResponseDto responseDto = new ResponseDto();
-            responseDto.setMessage("제안이 수정되었습니다.");
-            return responseDto;
-            //수락, 거절 상태변경 기능 추가
-        } else if ("수락".equals(dto.getStatus()) || "거절".equals(dto.getStatus())) {
-            service.updateNegotiationStatus(itemId, proposalId, dto);
-            ResponseDto responseDto = new ResponseDto();
-            responseDto.setMessage("제안의 상태가 변경되었습니다.");
-            return responseDto;
-            //구매확정기능추가
-        } else {
-            service.updateAcceptStatus(itemId, proposalId, dto);
-            ResponseDto responseDto = new ResponseDto();
-            responseDto.setMessage("구매가 확정되었습니다.");
-            return responseDto;
+            @RequestBody NegotiationDto negotiationDto
+    ) {
+        //제안수정 기능 추가
+        if (negotiationDto.getStatus() == null) {
+            this.service.updateNegotiation(itemId, proposalId, negotiationDto);
+            ResponseDto response = new ResponseDto();
+            response.setMessage("제안이 수정되었습니다.");
+            return ResponseEntity.ok(response);
+
+        } //구매확정 기능 추가
+        else if (negotiationDto.getStatus().equals("확정")){
+            this.service.confirmNegotiation(itemId, proposalId, negotiationDto);
+            ResponseDto response = new ResponseDto();
+            response.setMessage("구매가 확정되었습니다.");
+            return ResponseEntity.ok(response);
+
+        }   //수락, 거절 상태변경 기능 추가
+        else {
+            this.service.acceptNegotiation(itemId, proposalId, negotiationDto);
+            ResponseDto response = new ResponseDto();
+            response.setMessage("제안의 상태가 변경되었습니다.");
+            return ResponseEntity.ok(response);
         }
     }
 
     //DELETE /items/{itemId}/proposals/{proposalId}
     //구매 제안 삭제 기능 추가
-    @DeleteMapping("/{proposalId}")
+    @DeleteMapping("/{itemId}/proposals/{proposalId}")
     public ResponseDto deleteNegotiation(@PathVariable("itemId") Long itemId,
                                          @PathVariable("proposalId")Long proposalId,
                                          @RequestBody NegotiationDto dto){
