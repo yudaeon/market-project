@@ -1,6 +1,7 @@
 package com.example.mutsamarket.entity;
 
 import jakarta.persistence.*;
+import lombok.Cleanup;
 import lombok.Data;
 
 @Data
@@ -14,15 +15,12 @@ public class NegotiationEntity {
     @Column(name = "item_id")
     private Long itemId;
 
-    @Column(nullable = false)
-    private Long suggestedPrice;
+    @Column(name = "suggested_price")
+    private Integer suggestedPrice;
 
-    @Column(nullable = false)
     private String status;
 
-    @Column(nullable = false)
     private String writer;
 
-    @Column(nullable = false)
     private String password;
 }
