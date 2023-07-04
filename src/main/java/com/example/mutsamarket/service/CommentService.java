@@ -3,6 +3,7 @@ package com.example.mutsamarket.service;
 import com.example.mutsamarket.dto.comment.CommentDto;
 import com.example.mutsamarket.dto.comment.CommentListDto;
 import com.example.mutsamarket.entity.CommentEntity;
+import com.example.mutsamarket.entity.ItemEntity;
 import com.example.mutsamarket.repository.CommentRepository;
 import com.example.mutsamarket.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
@@ -82,22 +83,23 @@ public class CommentService {
     }
 
     // PUT: 답글 등록 -> 코드 수정 필요
-    public void createReply(Long itemId, Long commentId, CommentDto dto) {
+    public CommentDto updateCommentReply(Long itemId, Long commentId, CommentDto dto) {
         Optional<CommentEntity> optionalComment = commentRepository.findById(commentId);
         if (optionalComment.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        CommentEntity comment = optionalComment.get();
 
-        CommentEntity parentComment = optionalComment.get();
-        if (!itemRepository.existsById(itemId) || !itemId.equals(parentComment.getItemId()))
+        if (!comment.getItemId().equals(itemId) )
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
-        CommentEntity newReply = new CommentEntity();
-        newReply.setItemId(itemId);
-        newReply.setWriter(dto.getWriter());
-        newReply.setPassword(dto.getPassword());
-        newReply.setContent(dto.getContent());
-        newReply.setReply("답글이 등록되었습니다.");
+        Optional<ItemEntity> optionalItem = itemRepository.findById(itemId);
+        if (optionalItem.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
-        commentRepository.save(newReply);
+        ItemEntity item = optionalItem.get();
+        if (!item.getPassword().equals(dto.getPassword()))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        comment.setReply(dto.getReply());
+        return CommentDto.fromEntity(commentRepository.save(comment));
     }
 }

@@ -2,6 +2,7 @@ package com.example.mutsamarket.controller;
 
 import com.example.mutsamarket.dto.comment.CommentDto;
 import com.example.mutsamarket.dto.comment.CommentListDto;
+import com.example.mutsamarket.dto.item.ResponseDto;
 import com.example.mutsamarket.service.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ public class CommentController {
             @Valid @RequestBody CommentDto dto
     ) {
         log.info(dto.toString());
-        commentService.createComment(itemId, dto);
+        this.commentService.createComment(itemId, dto);
         Map<String, String> responseBody = new HashMap<>();
         responseBody.put("message", "댓글이 등록되었습니다.");
         return ResponseEntity.ok(responseBody);
@@ -78,15 +79,14 @@ public class CommentController {
 
     // PUT /items/{itemId}/comments/{commentId}/reply 답글 등록 구현하기
     @PutMapping("/{commentId}/reply")
-    public ResponseEntity<Map<String, String>> createReply(
+    public ResponseEntity<ResponseDto> updateCommentReply(
             @PathVariable("itemId") Long itemId,
             @PathVariable("commentId") Long commentId,
-            @Valid @RequestBody CommentDto dto
+            @RequestBody CommentDto commentDto
     ) {
-        log.info(dto.toString());
-        commentService.createReply(itemId, commentId, dto);
-        Map<String, String> responseBody = new HashMap<>();
-        responseBody.put("message", "답글이 등록되었습니다.");
-        return ResponseEntity.ok(responseBody);
+        this.commentService.updateCommentReply(itemId, commentId, commentDto);
+        ResponseDto response = new ResponseDto();
+        response.setMessage("댓글에 답변이 추가되었습니다.");
+        return ResponseEntity.ok(response);
     }
 }

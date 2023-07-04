@@ -5,6 +5,8 @@ import com.example.mutsamarket.entity.CommentEntity;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
+import java.awt.*;
+
 @Data
 public class CommentDto {
     private Long item_id;
@@ -18,12 +20,15 @@ public class CommentDto {
     @NotBlank(message = "내용을 입력하세요.")
     private String content;
 
+    private String reply;
+
     public static CommentDto fromEntity(CommentEntity commentEntity){
         CommentDto dto = new CommentDto();
         dto.setItem_id(commentEntity.getItemId());
         dto.setWriter(commentEntity.getWriter());
         dto.setPassword(commentEntity.getPassword());
         dto.setContent(commentEntity.getContent());
+        dto.setReply(commentEntity.getReply());
         return dto;
     }
 }
