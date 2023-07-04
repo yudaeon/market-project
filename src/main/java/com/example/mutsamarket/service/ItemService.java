@@ -1,7 +1,7 @@
 package com.example.mutsamarket.service;
 
 
-import com.example.mutsamarket.dto.ItemDto;
+import com.example.mutsamarket.dto.item.ItemDto;
 import com.example.mutsamarket.entity.ItemEntity;
 import com.example.mutsamarket.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;

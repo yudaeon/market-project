@@ -1,7 +1,7 @@
 package com.example.mutsamarket.controller;
 
-import com.example.mutsamarket.dto.ItemDto;
-import com.example.mutsamarket.dto.ResponseDto;
+import com.example.mutsamarket.dto.item.ItemDto;
+import com.example.mutsamarket.dto.item.ResponseDto;
 import com.example.mutsamarket.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

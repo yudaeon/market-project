@@ -2,6 +2,9 @@ package com.example.mutsamarket.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.List;
+
 @Data
 @Entity
 @Table(name = "comment")

@@ -1,7 +1,7 @@
 package com.example.mutsamarket.service;
 
-import com.example.mutsamarket.dto.CommentDto;
-import com.example.mutsamarket.dto.CommentListDto;
+import com.example.mutsamarket.dto.comment.CommentDto;
+import com.example.mutsamarket.dto.comment.CommentListDto;
 import com.example.mutsamarket.entity.CommentEntity;
 import com.example.mutsamarket.repository.CommentRepository;
 import com.example.mutsamarket.repository.ItemRepository;
@@ -81,7 +81,7 @@ public class CommentService {
         commentRepository.deleteById(commentId);
     }
 
-    // PUT: 답글 등록
+    // PUT: 답글 등록 -> 코드 수정 필요
     public void createReply(Long itemId, Long commentId, CommentDto dto) {
         Optional<CommentEntity> optionalComment = commentRepository.findById(commentId);
         if (optionalComment.isEmpty())
