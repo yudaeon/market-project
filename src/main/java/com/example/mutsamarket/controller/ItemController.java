@@ -6,6 +6,7 @@ import com.example.mutsamarket.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -49,15 +50,16 @@ public class ItemController {
         return response;
     }
 
-    @PutMapping("/{itemId}/image")
-    public ResponseDto updateImage(@PathVariable("itemId") Long id,
-                                   @ModelAttribute ItemDto dto,
-                                   @RequestParam("image") MultipartFile multipartFile) throws IOException {
-        service.updateUserImage(id, dto, multipartFile);
+    //PUT /items/{itemId}/image
+    @PutMapping(value = "/items/{itemId}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseDto updateImage(@PathVariable("itemId") Long itemId, @RequestParam("image") MultipartFile multipartFile) throws IOException {
+        service.updateUserImage(itemId, multipartFile);
         ResponseDto response = new ResponseDto();
         response.setMessage("이미지가 등록되었습니다.");
         return response;
     }
+
+
 
     // DELETE /items/{itemId}
     @DeleteMapping("/{itemId}")

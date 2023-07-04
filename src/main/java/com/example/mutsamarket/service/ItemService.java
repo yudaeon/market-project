@@ -15,6 +15,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Slf4j
@@ -82,21 +86,21 @@ public class ItemService {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "일치하는 상품이 없습니다.");
     }
 
-
-    public ItemDto updateUserImage(Long id, ItemDto dto, MultipartFile multipartFile) {
-        Optional<ItemEntity> imageItem = repository.findById(id);
-        if (imageItem.isPresent()) {
-            ItemEntity target = imageItem.get();
-
-            if (target.getPassword().equals(dto.getPassword())) {
-                target.setImageUrl(dto.getImageUrl());
-                return ItemDto.fromEntity(repository.save(target));
-            } else {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "비밀번호를 틀렸습니다.");
-            }
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "일치하는 상품이 없습니다.");
+    //이미지 업로드 수정
+    public void updateUserImage(Long itemId, MultipartFile multipartFile) throws IOException {
+        Optional<ItemEntity> imageItem = repository.findById(itemId);
+        if (imageItem.isEmpty()) {
+            throw new RuntimeException("제품이 없습니다.");
         }
+
+        ItemEntity itemEntity = imageItem.get();
+        Files.createDirectories(Path.of("media/itemImages"));
+        LocalDateTime now = LocalDateTime.now();
+        String imageUrl = String.format("media/itemImages/%s.png", now.toString());
+        Path uploadTo = Path.of(imageUrl);
+        multipartFile.transferTo(uploadTo);
+        itemEntity.setImageUrl(imageUrl);
+        repository.save(itemEntity);
     }
 
     //DELETE 물품 정보 삭제
