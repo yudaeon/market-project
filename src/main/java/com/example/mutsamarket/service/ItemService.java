@@ -4,8 +4,11 @@ package com.example.mutsamarket.service;
 import com.example.mutsamarket.dto.item.ItemDto;
 import com.example.mutsamarket.entity.ItemEntity;
 import com.example.mutsamarket.repository.ItemRepository;
+import com.sun.jdi.event.StepEvent;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.id.CompositeNestedGeneratedValueGenerator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +29,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ItemService {
     private final ItemRepository repository;
+    private final ItemRepository itemRepository;
 
     //CREATE 물품 정보 등록
     public ItemDto createItem(ItemDto dto) {
@@ -86,22 +90,75 @@ public class ItemService {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "일치하는 상품이 없습니다.");
     }
 
-    //이미지 업로드 수정
-    public void updateUserImage(Long itemId, MultipartFile multipartFile) throws IOException {
-        Optional<ItemEntity> imageItem = repository.findById(itemId);
-        if (imageItem.isEmpty()) {
-            throw new RuntimeException("제품이 없습니다.");
+    //이미지 업로드 -> 코드 수정필요
+//    public updateImage(Long id, MultipartFile image, String writer, String password) {
+//        Optional<ItemEntity> optionalItem = repository.findById(id);
+//        if (optionalItem.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+//
+//        ItemEntity item = optionalItem.get();
+//
+//        if (!item.getPassword().equals(password)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+//
+//        //이미지 저장
+//        String imageUrl = String.format("media/%d/", id);
+//        try {
+//            Files.createDirectories(Path.of(imageUrl));
+//        } catch (IOException e) {
+//            log.error(e.getMessage());
+//            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//        String imageOriginalFilename = image.getOriginalFilename();
+//        String[] imageFilenameSplit = imageOriginalFilename.split("\\.");
+//        String extention = imageFilenameSplit[imageFilenameSplit.length -1];
+//        String imageFileName = "image." + extention;
+//        String imagePath = imageUrl + imageFileName;
+//        log.info(imagePath);
+//        try {
+//            image.transferTo(Path.of(imagePath));
+//        } catch (IOException e){
+//            log.error(e.getMessage()); throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//        item.setImageUrl(String.format("/static/%d/%s", id, imageFileName));
+//        return ItemDto.fromEntity(repository.save(item));
+//    }
+    public ItemDto updateImage(Long id, MultipartFile image, String writer, String password) {
+        Optional<ItemEntity> optionalItem = itemRepository.findById(id);
+        if (optionalItem.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
-        ItemEntity itemEntity = imageItem.get();
-        Files.createDirectories(Path.of("media/itemImages"));
-        LocalDateTime now = LocalDateTime.now();
-        String imageUrl = String.format("media/itemImages/%s.png", now.toString());
-        Path uploadTo = Path.of(imageUrl);
-        multipartFile.transferTo(uploadTo);
-        itemEntity.setImageUrl(imageUrl);
-        repository.save(itemEntity);
+        ItemEntity item = optionalItem.get();
+
+        if (!item.getPassword().equals(password)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
+        // 이미지 저장
+        String imageUrl = String.format("media/%d/", id);
+        try {
+            Files.createDirectories(Path.of(imageUrl));
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        String imageOriginalFilename = image.getOriginalFilename();
+        String[] imageFilenameSplit = imageOriginalFilename.split("\\.");
+        String extension = imageFilenameSplit[imageFilenameSplit.length - 1];
+        String imageFileName = "image." + extension;
+        String imagePath = imageUrl + imageFileName;
+        log.info(imagePath);
+        try {
+            image.transferTo(Path.of(imagePath));
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        item.setImageUrl(String.format("/static/%d/%s", id, imageFileName));
+        return ItemDto.fromEntity(itemRepository.save(item));
     }
+
 
     //DELETE 물품 정보 삭제
     public void deleteItem(Long id, ItemDto dto) {
