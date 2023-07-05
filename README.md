@@ -26,7 +26,12 @@
 
 ## 🚧 주요 기능
 
-### 1️⃣  **`6/29 ~ 7/2`** **중고 물품 관리** 기능
+## 1️⃣  **중고 물품 관리** 기능
+
+### **중고 물품 관리 기능 요구사항**
+
+<aside>
+📌  **중고 물품 관리 요구사항**
 
 1. 누구든지 중고 거래를 목적으로 물품에 대한 정보를 등록할 수 있다. 
     1. 이때 반드시 포함되어야 하는 내용은 ****************************************************************************제목, 설명, 최소 가격, 작성자****************************************************************************이다.
@@ -42,10 +47,197 @@
     2. 이미지를 관리하는 방법은 자율이다.
 5. 등록된 물품 정보는 삭제가 가능하다. 
     1. 이때, 물품이 등록될 때 추가한 비밀번호를 첨부해야 한다.
+</aside>
 
+### 중고 물품 관리 기능 목록
 
+✅ **물품 등록 `POST /items`**
 
-### 2️⃣ **`7/3`** **중고 물품 댓글 기능**
+- 물품, 상품 설명, 최소가격, 작성자, 비밀번호 작성시 등록 가능
+- 등록 후 물품 상태 “판매중”으로 반환
+
+```json
+{
+    "title": "자전거 팝니다.",
+    "description": "접이식 자전거입니다.",
+    "minPriceWanted": 50000,
+    "writer": "daeon",
+    "password": "daeon11"
+}
+
+{
+    "title": "강아지 간식 팝니다.",
+    "description": "강아지 간식입니다.",
+    "minPriceWanted": 10000,
+    "writer": "poo",
+    "password": "poo1234"
+}
+```
+
+```json
+{
+    "message": "등록이 완료되었습니다."
+}
+
+{
+    "message": "등록이 완료되었습니다."
+}
+```
+
+✅ **물품 페이지 단위 조회 `GET /items?page={page}&limit={limit}`** 
+
+- 모든 페이지 상품 열람 가능
+
+```json
+{
+    "content": [
+        {
+            "id": 2,
+            "title": "강아지 간식 팝니다.",
+            "description": "강아지 간식입니다.",
+            "imageUrl": null,
+            "minPriceWanted": 10000,
+            "status": "판매중",
+            "writer": "poo",
+            "password": "poo1234"
+        },
+        {
+            "id": 1,
+            "title": "자전거 팝니다.",
+            "description": "접이식 자전거입니다.",
+            "imageUrl": null,
+            "minPriceWanted": 50000,
+            "status": "판매중",
+            "writer": "daeon",
+            "password": "daeon11"
+        }
+    ],
+    "pageable": {
+        "sort": {
+            "empty": false,
+            "unsorted": false,
+            "sorted": true
+        },
+        "offset": 0,
+        "pageNumber": 0,
+        "pageSize": 25,
+        "paged": true,
+        "unpaged": false
+    },
+    "last": true,
+    "totalPages": 1,
+    "totalElements": 2,
+    "first": true,
+    "size": 25,
+    "number": 0,
+    "sort": {
+        "empty": false,
+        "unsorted": false,
+        "sorted": true
+    },
+    "numberOfElements": 2,
+    "empty": false
+}
+```
+
+✅ **물품 단일 조회 `GET /items/{itemId}`** 
+
+- 상품의 Id로 단일 물품 조회 가능
+
+```json
+{
+    "id": 1,
+    "title": "자전거 팝니다.",
+    "description": "접이식 자전거입니다.",
+    "imageUrl": null,
+    "minPriceWanted": 50000,
+    "status": "판매중",
+    "writer": "daeon",
+    "password": "daeon11"
+}
+```
+
+✅ **물품 수정 `PUT /items/{itemId}`**
+
+- 비밀번호 일치 시 물품 수정 가능
+
+```json
+{
+    "title": "자전거 팝니다",
+    "description": "자전거 가격 인하합니다.",
+    "minPriceWanted": 3000,
+    "writer": "deaon",
+    "password": "daeon11"
+}
+           ----
+{
+    "message": "물품이 수정되었습니다."
+}
+```
+
+- 비밀번호 틀렸을 때 Bad Request 발생
+
+```json
+{
+    "title": "자전거 팝니다",
+    "description": "자전거 가격 인하합니다.",
+    "minPriceWanted": 3000,
+    "writer": "deaon",
+    "password": "daeon"
+}
+
+{
+"timestamp": "2023-07-05T01:11:36.370+00:00",
+    "status": 400,
+    "error": "Bad Request",
+}
+```
+
+✅ **물품 이미지 등록 `PUT /items/{itemId}/image`**
+
+- 물품 등록시 추가한 비밀번호 일치 시 물품 이미지 등록 가능
+    
+    ![스크린샷 2023-07-05 오전 10.13.00.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/9f2e5a62-6255-4765-b82b-49aa62008fdd/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2023-07-05_%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB_10.13.00.png)
+    
+- 이미지 등록하면 경로에 파일 생성
+    
+    ![스크린샷 2023-07-05 오전 10.13.56.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/9d7314ad-7ab2-452f-b6b4-31b6dab35ebe/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2023-07-05_%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB_10.13.56.png)
+    
+
+✅ **물품 삭제 `DELETE /items/{itemId}`**
+
+- 비밀번호 일치하는 경우 물품 삭제
+
+```json
+{
+    "writer": "daeon",
+    "password": "daeon11"
+}
+
+{
+    "message": "물품을 삭제했습니다."
+}
+```
+
+- 일치하지 않는 경우 Bad Request 발생 “비밀번호를 틀렸습니다.”
+
+```json
+{
+    "timestamp": "2023-07-05T01:18:10.427+00:00",
+    "status": 400,
+    "error": "Bad Request",
+    "trace": "org.springframework.web.server.ResponseStatusException: 400 BAD_REQUEST \"비밀번호를 틀렸습니다.
+}
+```
+
+![스크린샷 2023-07-05 오전 10.20.52.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/ce8ae3e4-90f2-4f88-96c9-05b9c7dbef06/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2023-07-05_%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB_10.20.52.png)
+
+## 2️⃣  **중고 물품 댓글 기능**
+
+### 중고 물품 댓글 기능 요구사항
+
+<aside>
+📌  **중고 물품 댓글 기능 요구사항**
 
 1. 등록된 물품에 대한 질문을 위하여 댓글을 등록할 수 있다. 
     1. 이때 반드시 포함되어야 하는 내용은 **대상 물품, 댓글 내용, 작성자**이다.
@@ -59,10 +251,37 @@
 5. 댓글에는 초기에 비워져 있는 **답글** 항목이 존재한다. 
     1. 만약 댓글이 등록된 대상 물품을 등록한 사람일 경우, 물품을 등록할 때 사용한 비밀번호를 첨부할 경우 답글 항목을 수정할 수 있다.
     2. 답글은 댓글에 포함된 공개 정보이다.
+</aside>
 
+### 중고 물품 댓글 기능
 
+댓글 등록 `POST /items/{itemId}/comments`
 
-### **3️⃣ `7/4 ~ 7/5` 구매 제안 기능**
+- 대상 물품, 댓글 내용, 작성자, 비밀번호 작성시 등록 가능
+
+댓글 조회 `GET /items/{itemId}/comments` 
+
+- 모든 댓글 페이지 단위 조회 가능
+
+댓글 수정 `PUT /items/{itemId}/comments/{commentId}`
+
+- 비밀번호 일치 시 수정 가능
+
+댓글 삭제 `DELETE /items/{itemId}/comments/{commentId}`
+
+- 비밀번호 일치 시 삭제 가능
+
+답글 등록 `PUT /items/{itemId}/comments/{commentId}/reply`
+
+- 등록된 댓글에 비밀번호 작성시 답글 등록 및 수정 가능
+- 등록된 답글 전체 조회 기능
+
+## **3️⃣  구매 제안 기능**
+
+### 구매 제안 요구사항
+
+<aside>
+📌  **구매 제안 요구사항**
 
 1. 등록된 물품에 대하여 구매 제안을 등록할 수 있다. 
     1. 이때 반드시 포함되어야 하는 내용은 **대상 물품, 제안 가격, 작성자**이다.
@@ -86,3 +305,6 @@
     2. 이때 구매 제안의 상태는 **확정** 상태가 된다.
     3. 구매 제안이 확정될 경우, 대상 물품의 상태는 **판매 완료**가 된다.
     4. 구매 제안이 확정될 경우, 확정되지 않은 다른 구매 제안의 상태는 모두 **거절**이 된다.
+</aside>
+
+### 구매 제안 기능
