@@ -5,7 +5,6 @@ import com.example.mutsamarket.entity.CommentEntity;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-import java.awt.*;
 
 @Data
 public class CommentDto {
