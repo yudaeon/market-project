@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
+@Valid
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/items/{itemId}/comments")

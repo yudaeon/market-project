@@ -3,6 +3,7 @@ package com.example.mutsamarket.controller;
 import com.example.mutsamarket.dto.item.ItemDto;
 import com.example.mutsamarket.dto.item.ResponseDto;
 import com.example.mutsamarket.service.ItemService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -12,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 @Slf4j
+@Valid
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/items")

@@ -4,14 +4,14 @@ import com.example.mutsamarket.dto.negotiation.NegotiationDto;
 import com.example.mutsamarket.dto.negotiation.NegotiationListDto;
 import com.example.mutsamarket.dto.item.ResponseDto;
 import com.example.mutsamarket.service.NegotiationService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 @RestController
+@Valid
 @RequestMapping("/items")
 @RequiredArgsConstructor
 public class NegotiationController {
